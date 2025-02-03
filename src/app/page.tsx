@@ -15,14 +15,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center  min-h-screen gap-6 pt-8 bg-gradient-to-r from-yellow-200 to-yellow-500">
+    <div className="flex flex-col p-2 sm:p-0 sm:pt-4 items-center  min-h-screen gap-6 pt-8 bg-gradient-to-r from-yellow-200 to-yellow-500">
       {/* Title Text */}
       <Image
         src="/BhagalpurGotLatent.png" // Path to the image in your public folder
         alt="Bhagalpur Got Latent"
         width={450}
         height={450}
-        className="rounded-3xl"
+        className="rounded-3xl "
       />
 
       {/* Buttons */}
