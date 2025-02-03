@@ -46,6 +46,11 @@ export default function Guidelines() {
           <b>the prize money will be divided </b>
           among them.
         </p>
+        <p className="mt-2 text-gray-700 text-sm">
+          🏅 Atleast,{" "}
+          <b> 4 winners </b>
+          can get trip ticket from <b>Groy</b>.
+        </p>
       </div>
 
       {/* Score and Grade Table */}
