@@ -21,8 +21,8 @@ export default function Home() {
       <Image
         src="/BhagalpurGotLatent.png" // Path to the image in your public folder
         alt="Bhagaplur Got Latent"
-        width={500}
-        height={500}
+        width={450}
+        height={450}
         className="rounded-3xl"
       />
 

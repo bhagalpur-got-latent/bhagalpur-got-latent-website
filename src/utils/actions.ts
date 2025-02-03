@@ -1,10 +1,11 @@
 import { google } from "googleapis";
-import fs from "fs";
+import { Readable } from "stream";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/drive",
   "https://www.googleapis.com/auth/spreadsheets",
 ];
+
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -13,44 +14,48 @@ const auth = new google.auth.GoogleAuth({
   },
   scopes: SCOPES,
 });
-const FOLDER_ID = process.env.FOLDER_ID || "";
-const SHEET_ID = process.env.SHEET_ID;
 
-// Function to delete an entry in Google Sheets and its associated resume in Google Drive
+const drive = google.drive({ version: "v3", auth });
+const sheets = google.sheets({ version: "v4", auth });
+
+// Function to remove existing entry (if any)
 async function removeExistingEntry(email: string, phone: string) {
-  const sheets = google.sheets({ version: "v4", auth });
+  try {
+    // Fetch sheet data
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SHEET_ID,
+      range: "Sheet1!A:D",
+    });
 
-  // Fetch the existing sheet data
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: "Sheet1!A:D",
-  });
+    const rows = response.data.values || [];
+    let rowIndexToDelete = -1;
+    let fileIdToDelete = "";
 
-  const rows = response.data.values || [];
-  let rowIndexToDelete = -1;
-  let fileIdToDelete = "";
+    // Search for matching entry
+    for (let i = 0; i < rows.length; i++) {
+      const [name, existingEmail, existingPhone, resumeUrl] = rows[i];
 
-  // Loop through the rows to find a match
-  for (let i = 0; i < rows.length; i++) {
-    const [name, existingEmail, existingPhone, resumeUrl] = rows[i];
-
-    if (existingEmail === email && existingPhone === phone) {
-      rowIndexToDelete = i + 1; // Google Sheets row indexes start from 1
-      fileIdToDelete = extractFileId(resumeUrl);
-      break;
+      if (existingEmail === email && existingPhone === phone) {
+        rowIndexToDelete = i + 1; // Google Sheets rows are 1-indexed
+        fileIdToDelete = extractFileId(resumeUrl);
+        break;
+      }
     }
-  }
 
-  // If a matching entry was found, delete the row and associated Drive file
-  if (rowIndexToDelete !== -1) {
-    await deleteSheetRow(rowIndexToDelete);
-    if (fileIdToDelete) {
-      await deleteFileFromDrive(fileIdToDelete);
+    // If an entry exists, delete the row and associated file
+    if (rowIndexToDelete !== -1) {
+      await deleteSheetRow(rowIndexToDelete);
+      if (fileIdToDelete) {
+        await deleteFileFromDrive(fileIdToDelete);
+      }
     }
+  } catch (error) {
+    console.error("Error removing existing entry:", error);
+    throw error;
   }
 }
 
-// Extract Google Drive File ID from URL
+// Extract file ID from Google Drive URL
 function extractFileId(resumeUrl: string): string {
   const match = resumeUrl.match(/\/d\/(.*?)\//);
   return match ? match[1] : "";
@@ -58,18 +63,16 @@ function extractFileId(resumeUrl: string): string {
 
 // Delete a row from Google Sheets
 async function deleteSheetRow(rowIndex: number) {
-  const sheets = google.sheets({ version: "v4", auth });
-
   await sheets.spreadsheets.batchUpdate({
-    spreadsheetId: SHEET_ID,
+    spreadsheetId: process.env.SHEET_ID,
     requestBody: {
       requests: [
         {
           deleteDimension: {
             range: {
-              sheetId: 0, // Default to first sheet (adjust if needed)
+              sheetId: 0, // Adjust if necessary
               dimension: "ROWS",
-              startIndex: rowIndex - 1, // Google Sheets uses zero-based index
+              startIndex: rowIndex - 1,
               endIndex: rowIndex,
             },
           },
@@ -81,49 +84,52 @@ async function deleteSheetRow(rowIndex: number) {
 
 // Delete file from Google Drive
 async function deleteFileFromDrive(fileId: string) {
-  const drive = google.drive({ version: "v3", auth });
   await drive.files.delete({ fileId });
 }
 
-// Upload file to Google Drive
-export async function uploadToDrive(
-  filePath: string,
-  fileName: string,
-  email: string,
-  phone: string
-) {
-  const drive = google.drive({ version: "v3", auth });
+// Upload the file to Google Drive and update Google Sheets
+export async function uploadToDrive(fileBuffer: Buffer, fileName: string, email: string, phone: string) {
+  try {
+    // Convert Buffer to Readable Stream
+    const bufferStream = new Readable();
+    bufferStream.push(fileBuffer);
+    bufferStream.push(null);
 
-  // Remove existing entry before uploading a new one
-  await removeExistingEntry(email, phone);
+    // Remove any existing entry before uploading the new file
+    await removeExistingEntry(email, phone);
 
-  // Upload new resume
-  const response = await drive.files.create({
-    requestBody: { name: fileName, parents: [FOLDER_ID] },
-    media: { mimeType: "application/pdf", body: fs.createReadStream(filePath) },
-  });
+    // Upload new resume file to Google Drive
+    const response = await drive.files.create({
+      requestBody: { name: fileName, parents: [process.env.FOLDER_ID] },
+      media: { mimeType: "application/pdf", body: bufferStream }, // Pass buffer stream
+    });
 
-  await drive.permissions.create({
-    fileId: response.data.id || "",
-    requestBody: { role: "reader", type: "anyone" },
-  });
+    await drive.permissions.create({
+      fileId: response.data.id || "",
+      requestBody: { role: "reader", type: "anyone" },
+    });
 
-  return `https://drive.google.com/file/d/${response.data.id}/view`;
+    // Return the URL of the uploaded file
+    return `https://drive.google.com/file/d/${response.data.id}/view`;
+  } catch (error) {
+    console.error("Error uploading file to Google Drive:", error);
+    throw error;
+  }
 }
 
-// Append Data to Google Sheets
-export async function appendToSheet(
-  name: string,
-  email: string,
-  phone: string,
-  resumeUrl: string
-) {
-  const sheets = google.sheets({ version: "v4", auth });
+// Append data to Google Sheets
+export async function appendToSheet(name: string, email: string, phone: string, resumeUrl: string) {
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: process.env.SHEET_ID,
+      range: "Sheet1!A:D",
+      valueInputOption: "RAW",
+      requestBody: { values: [[name, email, phone, resumeUrl]] },
+    });
 
-  await sheets.spreadsheets.values.append({
-    spreadsheetId: SHEET_ID,
-    range: "Sheet1!A:D",
-    valueInputOption: "RAW",
-    requestBody: { values: [[name, email, phone, resumeUrl]] },
-  });
+    console.log("Data appended successfully to Google Sheets");
+  } catch (error) {
+    console.error("Error appending data to Google Sheets:", error);
+    throw error;
+  }
 }
