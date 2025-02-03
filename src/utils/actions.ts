@@ -90,6 +90,11 @@ async function deleteFileFromDrive(fileId: string) {
 // Upload the file to Google Drive and update Google Sheets
 export async function uploadToDrive(fileBuffer: Buffer, fileName: string, email: string, phone: string) {
   try {
+    // Make sure FOLDER_ID is set
+    if (!process.env.FOLDER_ID) {
+      throw new Error("FOLDER_ID is not defined in environment variables");
+    }
+
     // Convert Buffer to Readable Stream
     const bufferStream = new Readable();
     bufferStream.push(fileBuffer);
@@ -100,10 +105,17 @@ export async function uploadToDrive(fileBuffer: Buffer, fileName: string, email:
 
     // Upload new resume file to Google Drive
     const response = await drive.files.create({
-      requestBody: { name: fileName, parents: [process.env.FOLDER_ID] },
-      media: { mimeType: "application/pdf", body: bufferStream }, // Pass buffer stream
+      requestBody: {
+        name: fileName,
+        parents: [process.env.FOLDER_ID],  // Ensure the folder ID is correctly passed
+      },
+      media: {
+        mimeType: "application/pdf",
+        body: bufferStream,  // Pass the buffer stream
+      },
     });
 
+    // Set the permissions to make the file readable by anyone
     await drive.permissions.create({
       fileId: response.data.id || "",
       requestBody: { role: "reader", type: "anyone" },
