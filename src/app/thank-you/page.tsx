@@ -13,12 +13,12 @@ const ThankYou = () => {
 
   return (
     <div
-      className={`${fira_sans.className} min-h-screen flex items-center justify-center bg-gray-100`}
+      className={`${fira_sans.className} min-h-screen flex items-center justify-center bg-gray-100 px-4 py-2`}
     >
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full text-center">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-lg w-full text-center">
         {/* Thank You Message */}
         <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg mb-6">
-          <h1 className="text-3xl font-semibold text-green-600">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-green-600">
             Thank You for Registering!
           </h1>
           <p className="mt-4 text-lg text-gray-700">

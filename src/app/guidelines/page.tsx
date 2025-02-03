@@ -47,10 +47,9 @@ export default function Guidelines() {
           among them.
         </p>
         <p className="mt-2 text-gray-700 text-sm">
-          🏅 Atleast,{" "}
-          <b> 4 winners </b>
-          can get trip ticket from <b>Groy</b>.
-        </p>
+  🏅 At least <b>4 winners</b> can win a trip ticket from <b>Groy</b>.
+</p>
+
       </div>
 
       {/* Score and Grade Table */}

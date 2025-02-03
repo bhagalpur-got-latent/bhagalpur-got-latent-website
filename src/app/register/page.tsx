@@ -108,7 +108,6 @@ export default function Home() {
       setIsSuccess(false);
     }
   };
-
   useEffect(() => {
     if (message === "Resume uploaded successfully!") {
       setTimeout(() => {
@@ -126,7 +125,7 @@ export default function Home() {
       <div className="flex justify-center">
         {message && (
           <div
-            className={`flex items-center min-w-[25rem] py-4 px-2 mt-0 mb-4 top-2 text-sm border rounded-lg absolute ${
+            className={`flex items-center max-w-[25rem] py-4 px-2 mt-0 mb-4 top-2 text-sm border rounded-lg absolute ${
               isSuccess === null
                 ? "text-blue-800 border-blue-300 bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" // Info state (waiting)
                 : isSuccess
