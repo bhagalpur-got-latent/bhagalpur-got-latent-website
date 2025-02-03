@@ -97,7 +97,7 @@ export default function Home() {
     if (file) data.append("resume", file);
 
     try {
-      setMessage("Please wait, uploading resume...");
+      setMessage("Please wait, registering...");
       setIsSuccess(null); // Reset state
 
       const res = await axios.post<{ resumeUrl: string }>("/api/upload", data);
