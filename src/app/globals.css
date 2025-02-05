@@ -19,3 +19,50 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.cracker-container {
+  position: relative;
+  z-index: 1;
+}
+
+.cracker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  animation: crackerAnimation 2s infinite ease-in-out;
+}
+
+.cracker:nth-child(1) {
+  animation-delay: 0s;
+  top: 20%;
+  left: 30%;
+}
+
+.cracker:nth-child(2) {
+  animation-delay: 0.5s;
+  top: 50%;
+  left: 50%;
+}
+
+.cracker:nth-child(3) {
+  animation-delay: 1s;
+  top: 70%;
+  left: 70%;
+}
+
+@keyframes crackerAnimation {
+  0% {
+    transform: scale(0) translate(0, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2) translate(30px, -30px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0) translate(0, 0);
+    opacity: 0;
+  }
+}
