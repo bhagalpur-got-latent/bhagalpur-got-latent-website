@@ -216,9 +216,9 @@ export default function Home() {
       ></canvas>
 
       {/* Title Text */}
-      <div className=" absolute flex flex-col gap-5 items-center justify-center ">
+      <div className=" absolute flex flex-col gap-5 top-20 sm:top-10 justify-center ">
         <Image
-          src="/BhagalpurGotLatent-2.png" // Path to the image in your public folder
+          src="/BhagalpurGotLatent-3.png" // Path to the image in your public folder
           alt="Bhagalpur Got Latent"
           width={350}
           height={350}
