@@ -30,7 +30,7 @@ export default function Guidelines() {
       <div className="bg-white p-6 rounded-lg shadow-md max-w-lg text-center mt-6">
         <h2 className="text-xl font-semibold text-gray-800">Self-Grading</h2>
         <p className="mt-4 text-gray-700 text-sm">
-          🎭<b>Before your performance</b>, you will be asked to{" "}
+          🎭 <b>Before your performance</b>, you will be asked to{" "}
           <b>grade yourself</b>.
         </p>
         <p className="mt-2 text-gray-700 text-sm">
@@ -38,18 +38,16 @@ export default function Guidelines() {
           judges.
         </p>
         <p className="mt-2 text-gray-700 text-sm">
-          🏆<b>If the aggregate of judges' grades matches yours</b>, you will be
-          awarded <b>cash collected from the audience entry fees</b>.
+          🏆 <b>If the aggregate of judges' grades matches yours</b>, you will
+          be awarded <b>cash collected from the audience entry fees</b>.
         </p>
         <p className="mt-2 text-gray-700 text-sm">
-          🏅 If multiple contestants win,{" "}
-          <b>the prize money will be divided </b>
+          🏅 If multiple contestants win, <b>the prize money will be divided</b>{" "}
           among them.
         </p>
         <p className="mt-2 text-gray-700 text-sm">
-  🏅 At least <b>4 winners</b> can win a trip ticket from <b>Groy</b>.
-</p>
-
+          🏅 At least <b>4 winners</b> can win a trip ticket from <b>Groy</b>.
+        </p>
       </div>
 
       {/* Score and Grade Table */}
@@ -92,6 +90,22 @@ export default function Guidelines() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Additional Info Section */}
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-lg text-center mt-8">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Additional Information
+        </h2>
+        <p className="mt-4 text-gray-700 text-sm">
+          📝 <b>Resume should include information related to art form only.</b>
+        </p>
+        <p className="mt-4 text-gray-700 text-sm">
+          📧 <b>Gmail:</b> bhagalpurgotlatent2025@gmail.com
+        </p>
+        <p className="mt-2 text-gray-700 text-sm">
+          📞 <b>Contact:</b> 9080058587
+        </p>
       </div>
     </div>
   );
