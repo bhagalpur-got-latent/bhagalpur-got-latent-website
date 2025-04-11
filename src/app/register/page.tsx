@@ -121,7 +121,22 @@ export default function Home() {
       <h1 className={`${lobster_two.className} text-3xl text-center mb-6`}>
         Register for Bhagalpur's Got Latent
       </h1>
-
+      {/* Additional Info Section */}
+      <div className="bg-white p-6 rounded-lg shadow-md max-w-lg text-center mt-8">
+        <h2 className="text-xl font-semibold text-gray-800">Attension:</h2>
+        <p className="mt-4 text-gray-700 text-sm">
+          📝 <b>Resume should include information related to art form only.</b>
+        </p>
+        <h2 className="text-xl font-semibold text-gray-800">
+          Contact details:
+        </h2>
+        <p className="mt-4 text-gray-700 text-sm">
+          📧 <b>Gmail:</b> bhagalpurgotlatent2025@gmail.com
+        </p>
+        <p className="mt-2 text-gray-700 text-sm">
+          📞 <b>Contact:</b> 9080058587
+        </p>
+      </div>
       <div className="flex justify-center">
         {message && (
           <div

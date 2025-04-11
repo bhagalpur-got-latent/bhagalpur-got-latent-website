@@ -91,22 +91,6 @@ export default function Guidelines() {
           </table>
         </div>
       </div>
-
-      {/* Additional Info Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md max-w-lg text-center mt-8">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Additional Information
-        </h2>
-        <p className="mt-4 text-gray-700 text-sm">
-          📝 <b>Resume should include information related to art form only.</b>
-        </p>
-        <p className="mt-4 text-gray-700 text-sm">
-          📧 <b>Gmail:</b> bhagalpurgotlatent2025@gmail.com
-        </p>
-        <p className="mt-2 text-gray-700 text-sm">
-          📞 <b>Contact:</b> 9080058587
-        </p>
-      </div>
     </div>
   );
 }
